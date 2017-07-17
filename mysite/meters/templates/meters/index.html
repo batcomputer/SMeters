@@ -1,0 +1,78 @@
+
+
+{% load staticfiles %}
+<html>
+    <head>
+    <script src="https:code.jquery.com/jquery-1.11.3.min.js"></script>	
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+</head>
+<script>
+
+$(function(){
+   var processed_json = new Array();
+   $.getJSON('/meters/data',
+function(data){
+
+	    for (i = 0; i< data.length; i++){
+	    	processed_json.push([data[i].key, parseInt(data[i].fields.energy)]);
+	    }
+
+   	//defining a function
+    	$('#container').highcharts({
+
+		    chart: {
+		        type: 'line'
+		    },
+		    title: {
+		        text: 'Energy consumption'
+		    },
+		    subtitle: {
+		        text: 'Source: Bharti'
+		    },
+		    xAxis: {
+		        type:'category',
+		        allowDecimals: false,
+		        title:{
+
+		        	text:""
+		        }
+		    },
+		    yAxis: {
+		        title: {
+		            text: "Energy (kwh)"
+		        }
+		    },
+		
+		    series: [{
+		        name: 'Bharti',
+		        data: processed_json,
+		     
+		    }]
+		});
+    });
+});
+
+   </script>
+
+<div>
+    <h1><a href="/">Datapage </a></h1>
+</div>
+
+ <div id="container" style="height: 400px"></div>
+
+
+
+
+
+<div class="content container">
+    <div class="row">
+        <div class="col-md-8">
+<script type='text/javascript'>
+  //var energydata = {{ energykwh|escapejs }}
+</script>
+{% for item in energykwh %}
+<li> Values: {{ item }} {{ item.DateandTime }}</li>
+{% endfor %}
+<div>
