@@ -1,3 +1,4 @@
+#Python script running on virtual machine to sort arriving energy readings into their respective tables in SQL database linked with Django app 
 import csv,sys,os
 
 project_dir ="/home/batcomputer/mysite/mysite/"
@@ -10,26 +11,15 @@ import django
 import datetime
 django.setup()
 
-from meters.models import EnergyModel
-
+from meters.models import BlockIVModel,SITModel,UdaigiriModel,MainDGModel,GirnarModel
 file=open('/home/batcomputer/mysite/chart.csv','r') 
 for line in file:       
-        line = line.replace(",", " ")
-        words =line.split()
-        inst=EnergyModel()
-        #inst.date= words[0]
-        #num = date(words[0])
-        #nump=datetime.datetime.strptime(words[0]+words[1], "\"%Y-%m-%d%H:%M\"")
-      
-        nump=datetime.datetime.strptime(words[0]+words[1], "\"%Y-%m-%d%H:%M\"")
-        inst.DateandTime =nump
-
- 
-        #nume= datetime.datetime.strptime(words[1], "%H:%M\"")
-      
-        #inst.time= words[1]
-
-        #inst.energy = words[2]
-        numb = float(words[2])
-        inst.energy = numb
-        inst.save()
+    line = line.replace(",", " ")
+    words =line.split()
+    inst=SITModel()
+    nump=datetime.datetime.strptime(words[0]+words[1], "%Y-%m-%d%H:%M:%S")
+    inst.the_date =nump
+    numb = float(words[2])
+    inst.the_energy = numb
+    inst.save()
+     
