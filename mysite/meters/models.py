@@ -5,12 +5,49 @@ from django.db import models
 
 # Create your models here.
 
-class EnergyModel(models.Model):
-    DateandTime = models.DateTimeField(auto_now=False, auto_now_add=False)
+class SITModel(models.Model):
 
-    energy =models.FloatField(max_length=20)
+    the_date= models.DateTimeField(auto_now=False, auto_now_add=False)
+    the_energy = models.FloatField(max_length=20)
 
     def __str__(self):
 
-        return str(self.energy)
-        
+        return str(self.the_energy)
+  
+
+class BlockIVModel(models.Model):
+
+    the_time = models.DateTimeField(auto_now=False, auto_now_add=False)
+    the_energydata = models.FloatField(max_length=20)
+
+    
+    def __str__(self):
+
+        return str(self.the_energydata)        
+
+class MainDGModel(models.Model):
+    the_time = models.DateTimeField(auto_now=False, auto_now_add=False)
+    the_energydata = models.FloatField(max_length=20)
+
+    def __str__(self):
+
+        return str(self.the_energydata)
+
+class UdaigiriModel(models.Model):
+    the_time= models.DateTimeField(auto_now=False, auto_now_add=False)
+    the_energydata = models.FloatField(max_length=20)        
+
+
+    def __str__(self):
+
+        return str(self.the_energydata)
+
+
+class GirnarModel(models.Model):
+    the_time= models.DateTimeField(auto_now=False, auto_now_add=False)
+    the_energydata = models.FloatField(max_length=20)        
+
+
+    def __str__(self):
+
+        return str(self.the_energydata)       
