@@ -1,5 +1,5 @@
-# SMeters
-API for viewing Multiple Energy Meter readings in IIT Delhi from an automatic data acquisition system constructed using a Raspberry Pi.
+# Smart Energy Meters
+API for viewing Energy Meter readings in IIT Delhi from an automatic data acquisition system constructed using a Raspberry Pi.
 This Django server was hosted on a Virtual Machine allotted on the cloud.
 Meter readings were extracted using minicom and Python.
 They were sent to the VM in csv format, where they were sorted into a SQL database.
