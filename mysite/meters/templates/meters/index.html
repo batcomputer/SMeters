@@ -1,78 +1,636 @@
 
 
+
 {% load staticfiles %}
+
+
 <html>
     <head>
-    <script src="https:code.jquery.com/jquery-1.11.3.min.js"></script>	
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https:code.jquery.com/jquery-1.11.3.min.js"></script>  
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script>
 
+</script>
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<script src = "{% static 'meters/moment-with-locales.js' %}"></script>
+<script src = "{% static 'meters/moment-duration-format.js' %}"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
+<script>
+
+
+$(function(){
+   var processed_json = new Array();
+
+   $.getJSON('/meters/data',
+function(data){
+         
+    var prevenergy = 0;
+    var prevdate = 0;
+    for (i = 0; i< data.length; i++){
+          
+    var date = data[i].fields.the_date;
+    var energy = parseFloat(data[i].fields.the_energy);
+
+    var unbox = new Date(date).toUTCString();
+    var final = new Date(unbox);
+    var sorted = final.setMinutes(final.getMinutes()+final.getTimezoneOffset());
+    var inform = final.toUTCString();
+       
+       if (i>1500){   	
+              
+        
+
+         ediff= energy - prevenergy;
+
+        var mins = new Date(inform);
+    
+
+        var duran = mins - prevdate;
+        console.log(duran);
+        var time = parseInt(duran);
+
+        var tdiff = Number((time)/(3600*1000));
+                
+
+         var pwr = Number(ediff/tdiff);
+ 
+         var absolute = Math.abs(pwr)
+         processed_json.push([unbox,parseFloat(absolute)]);
+    }         
+
+  prevdate = new Date(inform); 
+  prevenergy = energy;
+}
+
+
+    $("button[name='SIT Power']").click(function(){
+ 
+    //defining a function
+        $('#container').highcharts({
+
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Power in SIT'
+            },
+            subtitle: {
+                text: 'Source: Pi'
+            },
+            xAxis: {
+                type:'category',
+                allowDecimals: true,
+                title:{
+
+                    text:""
+               }
+            },
+            yAxis: {
+                title: {
+                    text: "Power(kW)"
+                }
+            },
+        
+            series: [{
+                name: 'SIT',
+                data: processed_json,
+            turboThreshold:15000,
+             
+            }]
+         });
+    });
+    });
+
+     $("#container").show();
+    
+       });
+
+
+   </script>
+
+<script>
+ 
+$(function(){
+   var processed_json = new Array();
+
+   
+   $.getJSON('/meters/more',
+function(data){
+         
+        for (i = 0; i< data.length; i++){
+          
+      var date = data[i].fields.the_time;
+
+
+    var final = moment(date).format('MMMM Do YYYY, h:mm:ss ');
+    
+            
+        processed_json.push([final, parseFloat(data[i].fields.the_energydata)*0.01]); 
+
+ }
+    $("button[name='Udaigiri']").click(function(){
+    //defining a function
+        $('#container').highcharts({
+
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Energy consumption in Udaigiri'
+            },
+            subtitle: {
+                text: 'Source: Pi'
+            },
+            xAxis: {
+                type:'category',
+                allowDecimals: true,
+                title:{
+
+                    text:""
+                }
+            },
+            yAxis: {
+                title: {
+                    text: "Energy(kWh)"
+                }
+            },
+        
+            series: [{
+                name: 'Udaigiri',
+                data: processed_json,
+            turboThreshold:15000,
+             
+            }]
+         });
+    });
+    
+     $("#container").show();
+       });
+});
+</script>
 <script>
 
 $(function(){
    var processed_json = new Array();
+
    $.getJSON('/meters/data',
 function(data){
+         
+   var prevenergy = 0;
+         var prevdate = 0;
+        for (i = 0; i< 700; i++){
+          
+      var date = data[i].fields.the_date;
+      var energy = parseFloat(data[i].fields.the_energy);
 
-	    for (i = 0; i< data.length; i++){
-	    	processed_json.push([data[i].key, parseInt(data[i].fields.energy)]);
-	    }
+    var final = moment(date).format('MMMM Do YYYY, HH:mm:ss ');
+    var minutes = 0;
 
-   	//defining a function
-    	$('#container').highcharts({
+       if (i>2){   	
 
-		    chart: {
-		        type: 'line'
-		    },
-		    title: {
-		        text: 'Energy consumption'
-		    },
-		    subtitle: {
-		        text: 'Source: Bharti'
-		    },
-		    xAxis: {
-		        type:'category',
-		        allowDecimals: false,
-		        title:{
+        
+        //var finalform = duration%60;
+         ediff= energy - prevenergy;
 
-		        	text:""
-		        }
-		    },
-		    yAxis: {
-		        title: {
-		            text: "Energy (kwh)"
-		        }
-		    },
-		
-		    series: [{
-		        name: 'Bharti',
-		        data: processed_json,
-		     
-		    }]
-		});
+         //console.log(finalform);
+         var mins = moment(date).toObject();
+        var tnot = moment(date,'milliseconds');
+         //var time = moment().subtract(mins,'hours');
+        
+        var duran = moment(mins).diff(moment(prevdate));
+       var time = parseInt(duran);
+       var tdiff = Number((time)/(3600*1000));
+       
+      
+         //console.log(tdiff);
+
+         var pwr = Number(ediff/tdiff);
+         //console.log(tdiff);
+         processed_json.push([final,parseFloat(pwr)]);
+    }         
+
+  prevdate = moment(date).toObject();
+  prevenergy = energy;
+}
+
+
+    $("button[name='Udaigiri Power']").click(function(){
+ 
+    //defining a function
+        $('#container').highcharts({
+
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Power in Udaigiri'
+            },
+            subtitle: {
+                text: 'Source: Pi'
+            },
+            xAxis: {
+                type:'category',
+                allowDecimals: true,
+                title:{
+
+                    text:""
+               }
+            },
+            yAxis: {
+                title: {
+                    text: "Power(kW)"
+                }
+            },
+        
+            series: [{
+                name: 'Udaigiri',
+                data: processed_json,
+            turboThreshold:15000,
+             
+            }]
+         });
     });
-});
+    });
+
+     $("#container").show();
+    
+       });
+
 
    </script>
 
-<div>
-    <h1><a href="/">Datapage </a></h1>
-</div>
+<script>
 
- <div id="container" style="height: 400px"></div>
+$(function(){
+   var processed_json = new Array();
 
+   $.getJSON('/meters/more',
+function(data){
+         
+   var prevenergy = 0;
+         var prevdate = 0;
+        for (i = 0; i< data.length; i++){
+          
+      var date = data[i].fields.the_date;
+      var energy = parseFloat(data[i].fields.the_energy);
 
+    var final = moment(date).format('MMMM Do YYYY, HH:mm:ss ');
+    var minutes = 0;
 
+       if (i>2){   	
 
+        //var finalform = duration%60;
+         ediff= energy - prevenergy;
 
-<div class="content container">
-    <div class="row">
-        <div class="col-md-8">
-<script type='text/javascript'>
-  //var energydata = {{ energykwh|escapejs }}
+         //console.log(finalform);
+         var mins = moment(date).toObject();
+        var tnot = moment(date,'milliseconds');
+         //var time = moment().subtract(mins,'hours');
+        
+        var duran = moment(mins).diff(moment(prevdate));
+       var time = parseInt(duran);
+       var tdiff = Number((time)/(3600*1000));
+         //console.log(tdiff);
+         var pwr = Number(ediff/tdiff);
+         //console.log(tdiff);
+         processed_json.push([final,parseFloat(pwr)]);
+    }         
+  prevdate = moment(date).toObject();
+  prevenergy = energy;
+}
+    $("button[name='Block4 Power']").click(function(){
+ 
+    //defining a function
+        $('#container1').highcharts({
+
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Power in Block4'
+            },
+            subtitle: {
+                text: 'Source: Pi'
+            },
+            xAxis: {
+                type:'category',
+                allowDecimals: true,
+                title:{
+
+                    text:""
+               }
+            },
+            yAxis: {
+                title: {
+                    text: "Power(kW)"
+                }
+            },
+        
+            series: [{
+                name: 'Block4',
+                data: processed_json,
+            turboThreshold:15000,
+             
+            }]
+         });
+    });
+    });
+
+     $("#container1").show();
+    
+       });
+
+   </script>
+
+<script>
+
+$(function(){
+   var processed_json = new Array();
+
+   $.getJSON('/meters/data',
+function(data){
+         
+   var prevenergy = 0;
+         var prevdate = 0;
+        for (i = 0; i< 700; i++){      
+    var date = data[i].fields.the_date;
+    var energy = parseFloat(data[i].fields.the_energy);
+    var final = moment(date).format('MMMM Do YYYY, HH:mm:ss ');
+    var minutes = 0;
+       if (i>2 && i<700){
+        //var finalform = duration%60;
+         ediff= energy - prevenergy;
+         //console.log(finalform);
+         var mins = moment(date).toObject();
+        var tnot = moment(date,'milliseconds');
+         //var time = moment().subtract(mins,'hours');
+        var duran = moment(mins).diff(moment(prevdate));
+       var time = parseInt(duran);
+       var tdiff = Number((time)/(3600*1000));
+         //console.log(tdiff);
+         var pwr = Number(ediff/tdiff);
+         //console.log(tdiff);
+         processed_json.push([final,parseFloat(pwr)]);
+    }         
+
+  prevdate = moment(date).toObject();
+  prevenergy = energy;
+}
+
+    $("button[name='MainDGSet Power']").click(function(){
+ 
+    //defining a function
+        $('#container').highcharts({
+
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Power in MainDGSet'
+            },
+            subtitle: {
+                text: 'Source: Pi'
+            },
+            xAxis: {
+                type:'category',
+                allowDecimals: true,
+                title:{
+
+                    text:""
+               }
+            },
+            yAxis: {
+                title: {
+                    text: "Power(kW)"
+                }
+            },
+        
+            series: [{
+                name: 'MainDGSet',
+                data: processed_json,
+            turboThreshold:15000,
+             
+            }]
+         });
+    });
+    });
+
+     $("#container").show();
+    
+       });
+  </script>
+<script>
+ $(function(){
+   var processed_json = new Array();
+   $.getJSON('/meters/more',
+function(data){
+        for (i = 0; i< data.length; i++){
+      var date = data[i].fields.the_time;
+    var final = moment(date).format('MMMM Do YYYY, h:mm:ss ');
+        processed_json.push([final, parseFloat(data[i].fields.the_energydata)*0.01]); 
+    }
+    $("button[name='Block4']").click(function(){
+    //defining a function
+        $('#container').highcharts({
+
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Energy consumption in Block4'
+            },
+            subtitle: {
+                text: 'Source: Pi'
+            },
+            xAxis: {
+                type:'category',
+                allowDecimals: true,
+                title:{
+
+                    text:""
+                }
+            },
+            yAxis: {
+                title: {
+                    text: "Energy(kWh)"
+                }
+            },
+        
+            series: [{
+                name: 'Block4',
+                data: processed_json,
+            turboThreshold:15000,
+             
+            }]
+         });
+    });
+    
+     $("#container").show();
+       });
+});
 </script>
-{% for item in energykwh %}
-<li> Values: {{ item }} {{ item.DateandTime }}</li>
-{% endfor %}
-<div>
+<script>
+ 
+$(function(){
+   var processed_json = new Array();
+   $.getJSON('/meters/more',
+function(data){
+        for (i = 0; i< data.length; i++){
+    var date = data[i].fields.the_time;
+    var final = moment(date).format('MMMM Do YYYY, h:mm:ss ');    
+        processed_json.push([final, parseFloat(data[i].fields.the_energydata)*0.01]); 
+    }
+    $("button[name='MainDGSet']").click(function(){
+    //defining a function
+        $('#container').highcharts({
+
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Energy consumption in MainDGSet'
+            },
+            subtitle: {
+                text: 'Source: Pi'
+            },
+            xAxis: {
+                type:'category',
+                allowDecimals: true,
+                title:{
+
+                    text:""
+                }
+            },
+            yAxis: {
+                title: {
+                    text: "Energy(kWh)"
+                }
+            },
+        
+            series: [{
+                name: 'MainDGSet',
+                data: processed_json,
+            turboThreshold:15000,
+             
+            }]
+         });
+    });
+    
+     $("#container").show();
+       });
+});
+</script>
+
+<script>
+$(function(){
+   var processed_json = new Array();   
+   $.getJSON('/meters/more',
+function(data){
+         
+        for (i = 0; i< data.length; i++){
+          
+      var date = data[i].fields.the_time;
+
+
+    var final = moment(date).format('MMMM Do YYYY, h:mm:ss ');
+    
+            
+        processed_json.push([final, parseFloat(data[i].fields.the_energydata)*0.01]); 
+    }
+    $("button[name='SIT']").click(function(){
+    //defining a function
+        $('#container').highcharts({
+
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Energy consumption in SIT'
+            },
+            subtitle: {
+                text: 'Source: Pi'
+            },
+            xAxis: {
+                type:'category',
+                allowDecimals: true,
+                title:{
+
+                    text:""
+                }
+            },
+            yAxis: {
+                title: {
+                    text: "Energy(kWh)"
+                }
+            },
+        
+            series: [{
+                name: 'SIT',
+                data: processed_json,
+            turboThreshold:15000,
+             
+            }]
+         });
+    });
+    
+     $("#container").show();
+       });
+});
+</script>
+
+
+ <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <title>Smart Energy Meters in IIT</title>
+    <!-- Bootstrap core CSS -->
+    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Smart Meters</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+                </ul>
+            <button type = "button" name = "SIT" class="btn btn-primary navbar-btn">SIT</button>
+            <button type = "button" name = "Udaigiri" class="btn btn-primary navbar-btn">Udaigiri</button>
+            <button type = "button" name = "Block4" class="btn btn-primary navbar-btn">Block4</button>
+            <button type = "button" name = "MainDGSet" class="btn btn-primary navbar-btn">MainDGSet</button>
+            <button type="button" name = "SIT Power" class="btn btn-primary navbar-btn">SIT Power</button>     
+            <button type = "button" name = "Udaigiri Power" class="btn btn-primary navbar-btn">Udaigiri Power</button>
+            <button type = "button" name = "Block4 Power" class="btn btn-primary navbar-btn">Block4 Power</button>
+            <button type = "button" name = "MainDGSet Power" class="btn btn-primary navbar-btn">MainDGSet Power</button>
+           
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+<div id="container" style="height: 400px"></div>
+<div id="container1" style="height: 400px"></div>
+
+{% block content %}
+    {% endblock %}
+
+
+
+
