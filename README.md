@@ -1,9 +1,9 @@
 ## Smart Energy Meters
 API for viewing Energy Meter readings in IIT Delhi from a data acquisition system constructed using a Raspberry Pi on a Nippen EM-34DS Energy Meter.
 This Django server was hosted on a Virtual Machine allotted on the cloud.
-Energy Meter readings were extracted using minicom and Python on the Pi.
+Meter readings were extracted using minicom and Python on the Pi.
 They were sent to the VM in csv format, where they were sorted into a SQL database.
-The energy data was then served in JSON format and finally viewed as a graph using the HighchartsJS plugin.
+The energy data was served in JSON format and finally viewed as a graph using the HighchartsJS plugin.
 
 ### Hardware Requirements
 1.Raspberry Pi 3
@@ -11,9 +11,10 @@ The energy data was then served in JSON format and finally viewed as a graph usi
 
 ### Software Requirements
 1.Minicom
-2.Python 3
-3.MySQL
-4.Django
+2.Screen
+3.Python 3
+4.MySQL
+5.Django
 
 ### Procedure
 1.Check if the port is open for receiving data in the energy meter. Set id to 485 on the meter's display to allow communication.
