@@ -16,6 +16,6 @@ Raspberry Pi 3 and RS485 to USB converter
 5.Django
 
 ### Procedure
-1.Check if the port is open for receiving data in the energy meter. Set id to 485 on the meter's display to allow communication.
+1.Check if the port is open for transmitting data in the energy meter. Set id to 485 on the meter's display to allow communication.
 2.Install minicom and set Baud Rate to 9600, Databits to 8 ,Stopbits to 1 and Parity to none.
 
