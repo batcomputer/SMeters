@@ -6,8 +6,7 @@ They were sent to the VM in csv format, where they were sorted into a SQL databa
 The energy data was served in JSON format and finally viewed as a graph using the HighchartsJS plugin.
 
 ### Hardware Requirements
-1.Raspberry Pi 3
-2.RS485 to USB converter
+Raspberry Pi 3 and RS485 to USB converter
 
 ### Software Requirements
 1.Minicom
